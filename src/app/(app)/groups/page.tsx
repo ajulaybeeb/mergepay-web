@@ -49,7 +49,7 @@ export default function GroupsPage() {
           <EmptyState
             icon={<Users className="h-8 w-8 text-ink" />}
             title="No groups yet"
-            description="Create a new circle or join an existing group with an invite code to start splitting expenses transparently on Stellar."
+            description="You haven't joined any groups yet. Create a new group to get started!"
             action={
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button onClick={() => setCreateOpen(true)}>
