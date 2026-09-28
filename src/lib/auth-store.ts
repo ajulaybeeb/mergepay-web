@@ -93,13 +93,18 @@ export const useAuth = create<AuthState>()(
         return storage;
       }),
       partialize: (state) => ({
+        token: state.token,
         user: state.user,
         lastAuthenticatedAt: state.lastAuthenticatedAt,
+        restoreStatus: state.restoreStatus,
       }),
       onRehydrateStorage: () => {
         return (state, error) => {
           if (error || !state) {
             return;
+          }
+          if (state.token) {
+            memoryToken = state.token;
           }
           const persistedUser = state.user;
           const lastAuth = state.lastAuthenticatedAt;
