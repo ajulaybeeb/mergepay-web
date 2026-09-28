@@ -407,7 +407,7 @@ test.describe("Group expense and settlement flow", () => {
       const errors = trackPageErrors(page);
       await mountGroupDetailMocks(page);
       await page.goto("/groups");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
 
       await expect(page.getByRole("heading", { name: /your groups/i })).toBeVisible();
       await expect(page.getByRole("heading", { name: /e2e road trip/i })).toBeVisible();
@@ -421,7 +421,7 @@ test.describe("Group expense and settlement flow", () => {
     test("creates a new group via the dialog", async ({ page }) => {
       await mountGroupDetailMocks(page);
       await page.goto("/groups");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await expect(page.getByRole("heading", { name: /your groups/i })).toBeVisible();
 
       await page.getByRole("button", { name: /new group/i }).click();
@@ -446,7 +446,7 @@ test.describe("Group expense and settlement flow", () => {
       const errors = trackPageErrors(page);
       await mountGroupDetailMocks(page);
       await page.goto(`/groups/${GROUP_ID}`);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
 
       await expect(page.getByRole("heading", { name: /e2e road trip/i })).toBeVisible();
       await expect(page.getByText(/expenses \(1\)/i)).toBeVisible();
@@ -464,7 +464,7 @@ test.describe("Group expense and settlement flow", () => {
       });
       await mountGroupDetailMocks(page, { expenseList: [] });
       await page.goto(`/groups/${GROUP_ID}`);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await expect(page.getByText(/no expenses yet/i)).toBeVisible();
 
       await page.getByRole("button", { name: /add expense/i }).click();
