@@ -363,6 +363,31 @@ async function mountGroupDetailMocks(
       body: JSON.stringify({ data: expenses, nextCursor: null }),
     })
   );
+
+  // External Horizon & rate providers
+  await page.route(/https:\/\/horizon(-testnet)?\.stellar\.org.*/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ core_version: "20.0.0", network_passphrase: MOCK_NETWORK_PASSPHRASE }),
+    })
+  );
+
+  await page.route(/https:\/\/api\.coingecko\.com.*/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ stellar: { usd: 0.12 }, "usd-coin": { usd: 1.0 } }),
+    })
+  );
+
+  await page.route(/https:\/\/api\.coinbase\.com.*/, (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ data: { amount: "0.12" } }),
+    })
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -400,7 +425,8 @@ test.describe("Group expense and settlement flow", () => {
       await expect(page.getByRole("heading", { name: /your groups/i })).toBeVisible();
 
       await page.getByRole("button", { name: /new group/i }).click();
-      await expect(page.getByRole("dialog", { name: /new group/i })).toBeVisible();
+      const dialog = page.getByRole("dialog", { name: /new group/i });
+      await expect(dialog).toBeVisible();
 
       await page.getByLabel(/group name/i).fill("E2E Road Trip");
       await page.getByLabel(/description/i).fill("Playwright test group");
@@ -409,7 +435,7 @@ test.describe("Group expense and settlement flow", () => {
         page.waitForResponse(
           (r) => r.url().includes("/api/groups") && r.request().method() === "POST"
         ),
-        page.getByRole("button", { name: /^create group$/i }).click(),
+        dialog.getByRole("button", { name: /^create group$/i }).click(),
       ]);
 
       expect(response.status()).toBe(201);
